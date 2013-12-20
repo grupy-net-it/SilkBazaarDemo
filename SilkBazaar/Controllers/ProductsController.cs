@@ -6,9 +6,11 @@ using SilkBazaar.Models;
 
 namespace SilkBazaar.Controllers
 {
+    [Authorize]
     public class ProductsController : Controller
     {
         // GET: /Products/
+        [AllowAnonymous]
         public ActionResult Index()
         {
             return View(Product.GetAll());
@@ -56,6 +58,7 @@ namespace SilkBazaar.Controllers
         }
 
         // GET: /Products/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -77,6 +80,7 @@ namespace SilkBazaar.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit([Bind(Include = "Id,Name,Price,Quantity")] Product product)
         {
             if (this.ModelState.IsValid)
