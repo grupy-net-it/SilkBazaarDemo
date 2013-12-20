@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
+
 using SilkBazaar.Models;
 
 namespace SilkBazaar.Controllers
 {
     public class ProductsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
         // GET: /Products/
         public ActionResult Index()
         {
-            return View(db.Products.ToList());
+            return View(Product.GetAll());
         }
 
         // GET: /Products/Details/5
@@ -27,11 +21,13 @@ namespace SilkBazaar.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+
+            Product product = Product.Get(id);
             if (product == null)
             {
                 return HttpNotFound();
             }
+
             return View(product);
         }
 
@@ -46,13 +42,13 @@ namespace SilkBazaar.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="Id,Name,Price,Quantity")] Product product)
+        public ActionResult Create([Bind(Include = "Name,Price,Quantity")] Product product)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 product.Id = Guid.NewGuid();
-                db.Products.Add(product);
-                db.SaveChanges();
+                product.Add();
+
                 return RedirectToAction("Index");
             }
 
@@ -66,11 +62,13 @@ namespace SilkBazaar.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+
+            Product product = Product.Get(id);
             if (product == null)
             {
                 return HttpNotFound();
             }
+
             return View(product);
         }
 
@@ -79,14 +77,15 @@ namespace SilkBazaar.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="Id,Name,Price,Quantity")] Product product)
+        public ActionResult Edit([Bind(Include = "Id,Name,Price,Quantity")] Product product)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                db.Entry(product).State = EntityState.Modified;
-                db.SaveChanges();
+                product.Update();
+
                 return RedirectToAction("Index");
             }
+
             return View(product);
         }
 
@@ -97,32 +96,26 @@ namespace SilkBazaar.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+
+            Product product = Product.Get(id);
             if (product == null)
             {
-                return HttpNotFound();
+                return this.HttpNotFound();
             }
+
             return View(product);
         }
 
         // POST: /Products/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            Product product = db.Products.Find(id);
-            db.Products.Remove(product);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+            Product product = Product.Get(id);
+            product.Delete();
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return RedirectToAction("Index");
         }
     }
 }
