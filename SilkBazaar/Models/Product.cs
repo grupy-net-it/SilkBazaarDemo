@@ -47,6 +47,7 @@ namespace SilkBazaar.Models
         {
             using (var context = new ApplicationDbContext())
             {
+                this.Id = Guid.NewGuid();
                 context.Products.Add(this);
                 context.SaveChanges();
             }
@@ -65,6 +66,7 @@ namespace SilkBazaar.Models
         {
             using (var context = new ApplicationDbContext())
             {
+                context.Entry(this).State = EntityState.Deleted;
                 context.Products.Remove(this);
                 context.SaveChanges();
             }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -34,39 +33,6 @@ namespace SilkBazaar.Models
             {
                 return context.Set<ApplicationUser>().ToList();
             }
-        }
-
-        public ApplicationUser Add(ApplicationUser entity)
-        {
-            using (var context = new ApplicationDbContext())
-            {
-                context.Set<ApplicationUser>().Add(entity);
-                context.SaveChanges();
-            }
-
-            return entity;
-        }
-
-        public ApplicationUser Update(ApplicationUser entity)
-        {
-            using (var context = new ApplicationDbContext())
-            {
-                context.Entry(entity).State = EntityState.Modified;
-                context.SaveChanges();
-            }
-
-            return entity;
-        }
-
-        public ApplicationUser Delete(ApplicationUser entity)
-        {
-            using (var context = new ApplicationDbContext())
-            {
-                context.Set<ApplicationUser>().Remove(entity);
-                context.SaveChanges();
-            }
-
-            return entity;
         }
     }
 }

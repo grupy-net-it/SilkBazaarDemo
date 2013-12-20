@@ -48,37 +48,33 @@ namespace SilkBazaar.Models
             }
         }
 
-        public Transaction Add(Transaction entity)
+        public void Add()
         {
             using (var context = new ApplicationDbContext())
             {
-                context.Set<Transaction>().Add(entity);
+                this.Id = Guid.NewGuid();
+                context.Set<Transaction>().Add(this);
                 context.SaveChanges();
             }
-
-            return entity;
         }
 
-        public Transaction Update(Transaction entity)
+        public void Update()
         {
             using (var context = new ApplicationDbContext())
             {
-                context.Entry(entity).State = EntityState.Modified;
+                context.Entry(this).State = EntityState.Modified;
                 context.SaveChanges();
             }
-
-            return entity;
         }
 
-        public Transaction Delete(Transaction entity)
+        public void Delete()
         {
             using (var context = new ApplicationDbContext())
             {
-                context.Set<Transaction>().Remove(entity);
+                context.Entry(this).State = EntityState.Deleted;
+                context.Set<Transaction>().Remove(this);
                 context.SaveChanges();
             }
-
-            return entity;
         }
     }
 }
